@@ -1,0 +1,225 @@
+<title>Omakase Automation</title>
+<style>
+  :root {
+    --bg: #fdfbf6;
+    --surface: #f4eee1;
+    --fg: #0e0a06;
+    --fg-muted: #6b5f52;
+    --accent: #ff5a2e;
+    --accent-deep: #c0350f;
+    --rule: rgba(14,10,6,0.14);
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: -apple-system, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: "SF Mono", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#070502; --surface:#16100a; --fg:#fbf6ec; --fg-muted:#b6a996; --accent:#ff7a4d; --accent-deep:#ff5a2e; --rule:rgba(251,246,236,0.16); }
+  }
+  :root[data-theme="dark"] { --bg:#070502; --surface:#16100a; --fg:#fbf6ec; --fg-muted:#b6a996; --accent:#ff7a4d; --accent-deep:#ff5a2e; --rule:rgba(251,246,236,0.16); }
+  :root[data-theme="light"] { --bg:#fdfbf6; --surface:#f4eee1; --fg:#0e0a06; --fg-muted:#6b5f52; --accent:#ff5a2e; --accent-deep:#c0350f; --rule:rgba(14,10,6,0.14); }
+
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: var(--sans); -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  a { color: inherit; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  .rise { animation: rise 0.7s cubic-bezier(.2,.7,.2,1) both; }
+
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 0 28px; }
+
+  header.top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 26px 28px; max-width: 1220px; margin: 0 auto;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .seal { width: 32px; height: 32px; position: relative; transform: rotate(-4deg); flex: none; }
+  .seal .mark { position: absolute; inset: 0; border-radius: 22%; background: linear-gradient(155deg, var(--accent) 0%, var(--accent-deep) 100%); }
+  .seal svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .seal circle { fill: none; stroke: var(--bg); stroke-width: 6; }
+  .seal .dot { fill: var(--bg); stroke: none; }
+  .wordmark { font-family: var(--serif); font-size: 22px; }
+  .top-right { display: flex; align-items: center; gap: 16px; }
+  .top-social { display: flex; align-items: center; gap: 12px; }
+  .top-social a {
+    color: var(--fg-muted); display: flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; transition: color .15s;
+  }
+  .top-social a:hover { color: var(--accent); }
+  .top-social svg { width: 18px; height: 18px; fill: currentColor; }
+  .top-cta {
+    font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em;
+    text-decoration: none; color: #1a0800; background: var(--accent);
+    padding: 9px 18px; border-radius: 999px; transition: background .15s, transform .15s;
+  }
+  .top-cta:hover { background: var(--accent-deep); color: #fff; transform: translateY(-1px); }
+
+  /* ---- hero ---- */
+  .hero {
+    min-height: 80vh; display: flex; flex-direction: column; justify-content: center;
+    padding: 40px 0 20px;
+  }
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent-deep); margin: 0 0 20px;
+  }
+  h1 {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(44px, 6.8vw, 76px); line-height: 1.05;
+    letter-spacing: -0.02em; margin: 0 0 30px; text-wrap: balance; max-width: 26ch;
+  }
+  .lede { font-size: 20px; line-height: 1.55; color: var(--fg-muted); max-width: 70ch; margin: 0 0 40px; }
+  .lede b { color: var(--fg); font-weight: 600; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; width: fit-content;
+    background: var(--accent); color: #1a0800;
+    font-size: 15px; font-weight: 700; letter-spacing: 0.01em;
+    padding: 15px 26px; border-radius: 999px; text-decoration: none;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); background: var(--accent-deep); color: #fff; }
+
+  /* ---- stats: big display numbers, no boxes ---- */
+  .stats { display: flex; gap: 48px; flex-wrap: wrap; margin-top: 64px; }
+  .stat-num {
+    font-family: var(--serif); font-size: clamp(36px, 5vw, 52px); line-height: 1; color: var(--fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fg-muted); margin-top: 8px; max-width: 20ch; line-height: 1.4; }
+
+  /* ---- grid ---- */
+  .grid-section { padding: 100px 0 0; }
+  .section-eyebrow {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-deep); margin: 0 0 16px;
+  }
+  .grid-head { font-family: var(--serif); font-size: clamp(28px, 4.4vw, 44px); font-weight: 400; margin: 0 0 50px; max-width: 34ch; text-wrap: balance; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 40px; row-gap: 40px; }
+  .cell { padding-top: 20px; border-top: 1px solid var(--rule); }
+  .cell-num { font-family: var(--mono); font-size: 12px; color: var(--accent-deep); font-variant-numeric: tabular-nums; }
+  .cell-title { font-family: var(--serif); font-size: 23px; font-weight: 400; margin: 12px 0 8px; text-wrap: balance; }
+  .cell-desc { font-size: 15px; line-height: 1.6; color: var(--fg-muted); }
+  @media (max-width: 620px) { .grid { grid-template-columns: 1fr; } }
+
+  /* ---- founder pull-quote ---- */
+  .founder { padding: 110px 0; }
+  .founder p {
+    font-family: var(--serif); font-style: italic; font-size: clamp(24px, 3.6vw, 34px);
+    line-height: 1.42; color: var(--fg); max-width: 40ch; margin: 0 0 26px; text-wrap: balance;
+  }
+  .founder p em { color: var(--accent-deep); font-style: italic; }
+  .founder .who {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-muted);
+  }
+
+  /* ---- closing ---- */
+  .reserve { padding: 0 0 100px; border-top: 1px solid var(--rule); padding-top: 90px; }
+  .reserve h2 {
+    font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 6.4vw, 64px);
+    line-height: 1.02; margin: 0 0 34px; text-wrap: balance; max-width: 24ch;
+  }
+  .reserve h2 em { font-style: italic; color: var(--accent-deep); }
+  .reserve .fine { font-size: 13.5px; color: var(--fg-muted); margin-top: 20px; }
+
+  footer.sign {
+    border-top: 1px solid var(--rule); padding: 26px 28px 40px;
+    max-width: 1220px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+  }
+  footer.sign .fname { font-family: var(--serif); font-size: 14px; color: var(--fg-muted); }
+  footer.sign .flinks { font-size: 13px; color: var(--fg-muted); display: flex; gap: 16px; }
+  footer.sign .flinks a { text-decoration: none; border-bottom: 1px solid transparent; }
+  footer.sign .flinks a:hover { color: var(--accent-deep); border-color: var(--accent-deep); }
+</style>
+
+<header class="top">
+  <div class="brand">
+    <div class="seal">
+      <div class="mark"></div>
+      <svg viewBox="0 0 58 58"><circle cx="29" cy="27" r="13"></circle><circle class="dot" cx="29" cy="44" r="2.6"></circle></svg>
+    </div>
+    <span class="wordmark">Omakase</span>
+  </div>
+  <div class="top-right">
+    <div class="top-social">
+      <a href="https://instagram.com/pasha_gear" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.25.07 1.63.07 4.81 0 3.18-.01 3.56-.07 4.81-.15 3.23-1.66 4.77-4.92 4.92-1.25.06-1.63.07-4.85.07-3.2 0-3.6 0-4.85-.07-3.26-.15-4.77-1.7-4.92-4.92C2.16 15.6 2.15 15.22 2.15 12c0-3.18.01-3.56.07-4.81C2.37 3.96 3.88 2.42 7.14 2.27 8.4 2.21 8.77 2.2 12 2.2zm0 1.8c-3.15 0-3.5 0-4.74.07-2.44.11-3.58 1.27-3.69 3.69C3.5 8.5 3.5 8.85 3.5 12s0 3.5.07 4.74c.11 2.42 1.24 3.58 3.69 3.69 1.24.06 1.58.07 4.74.07s3.5 0 4.74-.07c2.44-.11 3.58-1.26 3.69-3.69.06-1.24.07-1.58.07-4.74s0-3.5-.07-4.74c-.11-2.42-1.25-3.58-3.69-3.69C15.5 4.01 15.15 4 12 4zm0 3.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 1.8a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 0-5.4zm4.7-2.02a1.05 1.05 0 1 1 0 2.1 1.05 1.05 0 0 1 0-2.1z"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/pashagear" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.66 4.78 6.11V21h-4v-5.6c0-1.34-.02-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V21h-4z"/></svg>
+      </a>
+      <a href="mailto:gearpasha@gmail.com" aria-label="Email">
+        <svg viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1.4 2 7.6 6.2L19.6 7H4.4zM20 8.4l-7.4 6.05a1 1 0 0 1-1.27 0L4 8.4V17h16V8.4z"/></svg>
+      </a>
+    </div>
+    <a class="top-cta" href="https://calendar.app.google/MBDYYYYe1D1NtRiz6" target="_blank" rel="noopener">Book a call</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <p class="eyebrow rise">Less busyness. More business.</p>
+    <h1 class="rise" style="animation-delay:.05s">Spend your time running the business — not the busywork.</h1>
+    <p class="lede rise" style="animation-delay:.15s">We build the systems a real ops hire would run — <b>CRM updates, inbox replies, order records, follow-ups</b> — for founders, small teams, and anyone running a business, or a life, without the staff to match.</p>
+    <a class="btn rise" style="animation-delay:.25s" href="https://calendar.app.google/MBDYYYYe1D1NtRiz6" target="_blank" rel="noopener">Book a free 30-min call →</a>
+
+    <div class="stats rise" style="animation-delay:.32s">
+      <div><div class="stat-num">3–7</div><div class="stat-label">days, call to a working system</div></div>
+      <div><div class="stat-num">48h</div><div class="stat-label">call to written proposal</div></div>
+      <div><div class="stat-num">1</div><div class="stat-label">person — scopes it, builds it, answers when it breaks</div></div>
+    </div>
+  </section>
+
+  <section class="grid-section">
+    <p class="section-eyebrow">In production, not on a slide</p>
+    <h2 class="grid-head">Four systems already running for real clients.</h2>
+    <div class="grid">
+      <div class="cell">
+        <span class="cell-num">01</span>
+        <p class="cell-title">Orders, filed instantly</p>
+        <p class="cell-desc">A new order lands in the right spot, matched against the catalog and priced — no one retypes it.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-num">02</span>
+        <p class="cell-title">Inbox, summarized</p>
+        <p class="cell-desc">Ask what's going on with a client. Get the answer pulled from the actual thread — not the scroll.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-num">03</span>
+        <p class="cell-title">Follow-ups, worked daily</p>
+        <p class="cell-desc">One contact surfaces at a time from the list, every day, until it's actually been worked.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-num">04</span>
+        <p class="cell-title">Social, on autopilot — you approve</p>
+        <p class="cell-desc">Posts draft and schedule themselves. Nothing goes out without a tap from you first.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="founder">
+    <p>You talk to the person who scopes it, the person who builds it, and the person still around six months later if it <em>breaks</em>. Omakase is one person — not a rotating bench.</p>
+    <span class="who">— Pasha Gear, Founder</span>
+  </section>
+
+  <section class="reserve">
+    <p class="section-eyebrow">Ready when you are</p>
+    <h2>Tell me the one task you keep doing <em>on repeat.</em></h2>
+    <a class="btn" href="https://calendar.app.google/MBDYYYYe1D1NtRiz6" target="_blank" rel="noopener">Book a free 30-min call →</a>
+    <p class="fine">No pitch deck. We spend the 30 minutes figuring out what's actually broken.</p>
+  </section>
+</div>
+
+<footer class="sign">
+  <span class="fname">Pasha Gear — Omakase Automation</span>
+  <span class="flinks">
+    <a href="https://instagram.com/pasha_gear" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.linkedin.com/in/pashagear" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="mailto:gearpasha@gmail.com">gearpasha@gmail.com</a>
+  </span>
+</footer>
