@@ -90,7 +90,8 @@
   .btn:hover { transform: translateY(-2px); background: var(--accent-deep); color: #fff; }
 
   /* ---- stats: big display numbers, no boxes ---- */
-  .stats { display: flex; gap: 88px; flex-wrap: wrap; margin-top: 72px; }
+  .stats { display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap; margin-top: 72px; }
+  .stats > div { flex: 1 1 0; min-width: 140px; }
   .stat-num {
     font-family: var(--sans); font-weight: 700; font-size: clamp(36px, 5vw, 52px); line-height: 1; color: var(--fg);
     font-variant-numeric: tabular-nums;
@@ -190,9 +191,9 @@
     <a class="btn rise" style="animation-delay:.25s" href="https://calendar.app.google/MBDYYYYe1D1NtRiz6" target="_blank" rel="noopener">Book a free 30-min call →</a>
 
     <div class="stats rise" style="animation-delay:.32s">
-      <div><div class="stat-num">3–7</div><div class="stat-label">days, call to a working system</div></div>
-      <div><div class="stat-num">48h</div><div class="stat-label">call to written proposal</div></div>
-      <div><div class="stat-num">0</div><div class="stat-label">handoffs between the people who scope it and the people who build it</div></div>
+      <div><div class="stat-num">10+</div><div class="stat-label">hours back in your week, per system we build</div></div>
+      <div><div class="stat-num">3–7</div><div class="stat-label">days from call to a working system</div></div>
+      <div><div class="stat-num">48h</div><div class="stat-label">from call to a written proposal</div></div>
     </div>
   </section>
 
